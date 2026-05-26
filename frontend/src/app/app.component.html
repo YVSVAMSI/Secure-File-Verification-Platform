@@ -1,0 +1,157 @@
+<div class="dashboard">
+
+  <!-- SIDEBAR -->
+
+  <div class="sidebar">
+
+    <div class="logo">
+      🔐 FileSecure
+    </div>
+
+    <ul>
+      <li class="active">Upload Center</li>
+
+      <li routerLink="/verify">
+        Verify Integrity
+      </li>
+    </ul>
+
+  </div>
+
+  <!-- MAIN CONTENT -->
+
+  <div class="main-content">
+
+    <div class="topbar">
+
+      <h1>File Integrity Monitoring System</h1>
+
+      <div class="status-badge">
+        ACTIVE
+      </div>
+
+    </div>
+
+    <!-- STATS -->
+
+    <div class="stats-grid">
+
+      <div class="stat-card">
+        <h2>SHA-256</h2>
+        <p>Encryption</p>
+      </div>
+
+      <div class="stat-card">
+
+        <h2
+          [style.color]="
+            systemStatus === 'SECURE'
+            ? '#38bdf8'
+            : '#ef4444'
+          "
+        >
+          {{ systemStatus }}
+        </h2>
+
+        <p>System Status</p>
+
+      </div>
+
+    </div>
+
+    <!-- UPLOAD CARD -->
+
+    <div class="upload-card">
+
+      <h2>Upload File</h2>
+
+      <input
+        type="file"
+        id="fileInput"
+        hidden
+        (change)="onFileSelected($event)"
+      />
+
+      <label
+        for="fileInput"
+        class="upload-box"
+      >
+
+        <div class="upload-content">
+
+          <div class="upload-icon">
+            ☁️
+          </div>
+
+          <h3>Drag & Drop Files</h3>
+
+          <p>or click to browse</p>
+
+        </div>
+
+      </label>
+
+      <div
+        class="selected-file"
+        *ngIf="selectedFile"
+      >
+        Selected File: {{ selectedFile.name }}
+      </div>
+
+      <button
+        type="button"
+        class="upload-btn"
+        [disabled]="!selectedFile"
+        (click)="uploadFile()"
+      >
+        Upload & Generate Hash
+      </button>
+
+    </div>
+
+    <!-- RESULT -->
+
+    <div
+      class="result-card"
+      *ngIf="response"
+    >
+
+      <div class="success-box">
+        ✅ File Uploaded Successfully
+      </div>
+
+      <div class="result-grid">
+
+        <div class="info-card">
+          <span>File Name</span>
+          <h3>{{ response.fileName }}</h3>
+        </div>
+
+        <div class="info-card">
+          <span>File Size</span>
+          <h3>{{ response.fileSize }} bytes</h3>
+        </div>
+
+        <div class="info-card">
+          <span>Database ID</span>
+          <h3>#{{ response.id }}</h3>
+        </div>
+
+      </div>
+
+      <div class="hash-box">
+
+        <span>SHA-256 Hash</span>
+
+        <textarea
+          [value]="response.hashValue.substring(0,10) + '........' + response.hashValue.substring(response.hashValue.length - 6)"
+          readonly
+        ></textarea>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

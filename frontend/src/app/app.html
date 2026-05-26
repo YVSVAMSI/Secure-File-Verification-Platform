@@ -1,0 +1,232 @@
+<div class="dashboard">
+
+  <!-- SIDEBAR -->
+
+  <div class="sidebar">
+
+    <div class="logo">
+      🔐 FileSecure
+    </div>
+
+    <ul>
+      <li class="active">Upload Center</li>
+    </ul>
+
+  </div>
+
+  <!-- MAIN CONTENT -->
+
+  <div class="main-content">
+
+    <!-- TOPBAR -->
+
+    <div class="topbar">
+
+      <h1>File Integrity Monitoring System</h1>
+
+      <div class="status-badge">
+        ACTIVE
+      </div>
+
+    </div>
+
+    <!-- STATS -->
+
+    <div class="stats-grid">
+
+      <div class="stat-card">
+        <h2>SHA-256</h2>
+        <p>Encryption</p>
+      </div>
+
+      <div class="stat-card">
+
+        <h2
+          [style.color]="
+            systemStatus === 'SECURE'
+            ? '#38bdf8'
+            : '#ef4444'
+          "
+        >
+          {{ systemStatus }}
+        </h2>
+
+        <p>System Status</p>
+
+      </div>
+
+    </div>
+
+    <!-- UPLOAD CARD -->
+
+    <div class="upload-card">
+
+      <h2>Upload File</h2>
+
+      <input
+        type="file"
+        id="fileInput"
+        hidden
+        (change)="onFileSelected($event)"
+      />
+
+      <label
+        for="fileInput"
+        class="upload-box"
+      >
+
+        <div class="upload-content">
+
+          <div class="upload-icon">
+            ☁️
+          </div>
+
+          <h3>Drag & Drop Files</h3>
+
+          <p>or click to browse</p>
+
+        </div>
+
+      </label>
+
+      <div
+        class="selected-file"
+        *ngIf="selectedFile"
+      >
+        Selected File: {{ selectedFile.name }}
+      </div>
+
+      <button
+        type="button"
+        class="upload-btn"
+        [disabled]="!selectedFile"
+        (click)="uploadFile()"
+      >
+        Upload & Generate Hash
+      </button>
+
+    </div>
+
+    <!-- RESULT -->
+
+    <div
+      class="result-card"
+      *ngIf="response"
+    >
+
+      <div class="success-box">
+        ✅ File Uploaded Successfully
+      </div>
+
+      <div class="result-grid">
+
+        <div class="info-card">
+          <span>File Name</span>
+          <h3>{{ response.fileName }}</h3>
+        </div>
+
+        <div class="info-card">
+          <span>File Size</span>
+          <h3>{{ response.fileSize }} bytes</h3>
+        </div>
+
+        <div class="info-card">
+          <span>Database ID</span>
+          <h3>#{{ response.id }}</h3>
+        </div>
+
+      </div>
+
+      <div class="hash-box">
+
+        <span>SHA-256 Hash</span>
+
+        <textarea
+          [value]="response.hashValue.substring(0,10) + '........' + response.hashValue.substring(response.hashValue.length - 6)"
+          readonly
+        ></textarea>
+
+      </div>
+
+    </div>
+
+    <!-- VERIFY CARD -->
+
+    <div class="upload-card">
+
+      <h2>Verify File Integrity</h2>
+
+      <input
+        type="number"
+        placeholder="Enter File ID"
+        [(ngModel)]="verifyId"
+        class="verify-input"
+      />
+
+      <input
+        type="file"
+        id="verifyFileInput"
+        hidden
+        (change)="onVerifyFileSelected($event)"
+      />
+
+      <label
+        for="verifyFileInput"
+        class="upload-box"
+      >
+
+        <div class="upload-content">
+
+          <div class="upload-icon">
+            🔍
+          </div>
+
+          <h3>Select File To Verify</h3>
+
+          <p>Check integrity using SHA-256</p>
+
+        </div>
+
+      </label>
+
+      <div
+        class="selected-file"
+        *ngIf="verifyFile"
+      >
+        Selected File: {{ verifyFile.name }}
+      </div>
+
+      <button
+        type="button"
+        class="upload-btn"
+        [disabled]="!verifyFile || !verifyId"
+        (click)="verifyFileIntegrity()"
+      >
+        Verify Integrity
+      </button>
+
+    </div>
+
+    <!-- VERIFY RESULT -->
+
+    <div
+      class="result-card"
+      *ngIf="verifyResponse"
+    >
+
+      <div
+        class="success-box"
+        [style.background]="verifyResponse.integrityValid ? '#22c55e' : '#ef4444'"
+      >
+
+        {{ verifyResponse.integrityValid
+          ? '✅ Integrity Verified'
+          : '❌ File Tampered' }}
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
