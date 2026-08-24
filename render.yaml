@@ -14,12 +14,18 @@ services:
     envVars:
       - key: PORT
         value: 8080
+      # Leave unset to fall back to the in-memory H2 database (data resets on redeploy).
+      # To persist data, create a Render PostgreSQL instance and set these three vars.
       - key: SPRING_DATASOURCE_URL
-        sync: false # Set database connection URL in Render dashboard or use existing DB
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
       - key: SPRING_JPA_HIBERNATE_DDL_AUTO
         value: update
 
-  # 2. Angular Frontend Web Service
+  # 2. Angular Frontend Web Service (Nginx binds to $PORT, injected by Render)
   - type: web
     name: secure-file-verification-frontend
     runtime: docker
@@ -27,3 +33,4 @@ services:
     dockerContext: ./frontend
     region: singapore
     plan: free
+    healthCheckPath: /
