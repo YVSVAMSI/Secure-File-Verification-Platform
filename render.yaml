@@ -1,0 +1,38 @@
+# Render Blueprint for Secure File Verification Platform
+# https://render.com/docs/blueprint-spec
+
+services:
+  # 1. Spring Boot Backend Web Service
+  - type: web
+    name: secure-file-verification-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    region: singapore # or oregon, ohio, frankfurt
+    plan: free
+    healthCheckPath: /
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: secure-file-db
+          property: connectionString
+      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        value: update
+
+  # 2. Angular Frontend Web Service
+  - type: web
+    name: secure-file-verification-frontend
+    runtime: docker
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    region: singapore
+    plan: free
+
+databases:
+  # 3. Render Managed PostgreSQL Database
+  - name: secure-file-db
+    databaseName: file_integrity_db
+    user: db_user
+    plan: free

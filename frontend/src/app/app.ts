@@ -48,6 +48,19 @@ export class AppComponent {
     }
   }
 
+  private getApiUrl(): string {
+    if (typeof window !== 'undefined' && (window as any).API_URL) {
+      return (window as any).API_URL;
+    }
+    if (typeof window !== 'undefined' && window.location) {
+      const hostname = window.location.hostname;
+      if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return 'http://localhost:8080';
+      }
+    }
+    return 'https://secure-file-verification-backend.onrender.com';
+  }
+
   // UPLOAD FILE
 
   uploadFile(): void {
@@ -62,7 +75,7 @@ export class AppComponent {
     formData.append('file', this.selectedFile);
 
     this.http.post<any>(
-      'http://localhost:8080/upload',
+      `${this.getApiUrl()}/upload`,
       formData
     ).subscribe({
 
@@ -106,7 +119,7 @@ export class AppComponent {
     formData.append('file', this.verifyFile);
 
     this.http.post<any>(
-      `http://localhost:8080/verify/${this.verifyId}`,
+      `${this.getApiUrl()}/verify/${this.verifyId}`,
       formData
     ).subscribe({
 

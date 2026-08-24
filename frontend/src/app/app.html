@@ -1,232 +1,317 @@
-<div class="dashboard">
+<div class="dashboard-layout">
 
   <!-- SIDEBAR -->
-
-  <div class="sidebar">
-
-    <div class="logo">
-      🔐 FileSecure
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="brand-logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <path d="m9 12 2 2 4-4"/>
+        </svg>
+        <span>FileSecure</span>
+      </div>
+      <span class="version-badge">v1.0</span>
     </div>
 
-    <ul>
-      <li class="active">Upload Center</li>
-    </ul>
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">PLATFORM</div>
+      <ul>
+        <li class="nav-item active">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <span>Upload & Verification</span>
+        </li>
+      </ul>
+    </nav>
 
-  </div>
-
-  <!-- MAIN CONTENT -->
-
-  <div class="main-content">
-
-    <!-- TOPBAR -->
-
-    <div class="topbar">
-
-      <h1>File Integrity Monitoring System</h1>
-
-      <div class="status-badge">
-        ACTIVE
+    <div class="sidebar-footer">
+      <div class="status-indicator">
+        <span class="dot"></span>
+        <span class="status-text">System Active</span>
       </div>
-
     </div>
+  </aside>
 
-    <!-- STATS -->
+  <!-- MAIN CONTENT AREA -->
+  <main class="main-wrapper">
 
-    <div class="stats-grid">
-
-      <div class="stat-card">
-        <h2>SHA-256</h2>
-        <p>Encryption</p>
+    <!-- TOP HEADER -->
+    <header class="topbar">
+      <div class="page-title-group">
+        <h1>File Integrity Monitoring</h1>
+        <p class="subtitle">Real-time SHA-256 cryptographic verification platform</p>
       </div>
 
-      <div class="stat-card">
-
-        <h2
-          [style.color]="
-            systemStatus === 'SECURE'
-            ? '#38bdf8'
-            : '#ef4444'
-          "
-        >
-          {{ systemStatus }}
-        </h2>
-
-        <p>System Status</p>
-
+      <div class="topbar-actions">
+        <div class="status-pill" [class.secure]="systemStatus === 'SECURE'" [class.tampered]="systemStatus === 'TAMPERED'">
+          <span class="pill-dot"></span>
+          <span class="pill-text">{{ systemStatus }}</span>
+        </div>
       </div>
+    </header>
 
-    </div>
+    <!-- CONTENT BODY -->
+    <div class="content-container">
 
-    <!-- UPLOAD CARD -->
+      <!-- COMPACT METRICS GRID -->
+      <section class="metrics-grid">
 
-    <div class="upload-card">
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-title">ENCRYPTION</span>
+            <div class="metric-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </div>
+          </div>
+          <div class="metric-value">SHA-256</div>
+          <div class="metric-footer">Standard Cryptographic Hash</div>
+        </div>
 
-      <h2>Upload File</h2>
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-title">SYSTEM INTEGRITY</span>
+            <div class="metric-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+          </div>
+          <div class="metric-value" [style.color]="systemStatus === 'SECURE' ? '#16A34A' : '#DC2626'">
+            {{ systemStatus }}
+          </div>
+          <div class="metric-footer">
+            {{ systemStatus === 'SECURE' ? 'All records verified intact' : 'Tampered state detected' }}
+          </div>
+        </div>
 
-      <input
-        type="file"
-        id="fileInput"
-        hidden
-        (change)="onFileSelected($event)"
-      />
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-title">TOTAL MONITORED</span>
+            <div class="metric-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+                <polyline points="10 9 9 9 8 9"/>
+              </svg>
+            </div>
+          </div>
+          <div class="metric-value">
+            {{ response?.totalRecords ? response.totalRecords : 'Active' }}
+          </div>
+          <div class="metric-footer">Database Registered Files</div>
+        </div>
 
-      <label
-        for="fileInput"
-        class="upload-box"
-      >
+      </section>
 
-        <div class="upload-content">
+      <!-- TWO-COLUMN WORKFLOW SECTION -->
+      <div class="workflow-grid">
 
-          <div class="upload-icon">
-            ☁️
+        <!-- COLUMN 1: FILE UPLOAD SECTION -->
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="card-step-badge">Step 1</span>
+              <h2>Upload File to Monitor</h2>
+            </div>
+            <p class="card-description">Store file metadata and generate an immutable SHA-256 hash digest.</p>
           </div>
 
-          <h3>Drag & Drop Files</h3>
+          <div class="card-body">
+            <input
+              type="file"
+              id="fileInput"
+              hidden
+              (change)="onFileSelected($event)"
+            />
 
-          <p>or click to browse</p>
+            <label for="fileInput" class="dropzone" [class.has-file]="selectedFile">
+              <div class="dropzone-content">
+                <div class="dropzone-icon">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                  </svg>
+                </div>
+                <div class="dropzone-text">
+                  <h3>Choose a file or drag & drop</h3>
+                  <p>Supports all document, binary, and media file formats</p>
+                </div>
+              </div>
+            </label>
 
-        </div>
+            <div class="file-chip" *ngIf="selectedFile">
+              <div class="file-chip-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
+                  <polyline points="13 2 13 9 20 9"/>
+                </svg>
+              </div>
+              <span class="file-chip-name">{{ selectedFile.name }}</span>
+              <span class="file-chip-size">({{ selectedFile.size }} bytes)</span>
+            </div>
 
-      </label>
-
-      <div
-        class="selected-file"
-        *ngIf="selectedFile"
-      >
-        Selected File: {{ selectedFile.name }}
-      </div>
-
-      <button
-        type="button"
-        class="upload-btn"
-        [disabled]="!selectedFile"
-        (click)="uploadFile()"
-      >
-        Upload & Generate Hash
-      </button>
-
-    </div>
-
-    <!-- RESULT -->
-
-    <div
-      class="result-card"
-      *ngIf="response"
-    >
-
-      <div class="success-box">
-        ✅ File Uploaded Successfully
-      </div>
-
-      <div class="result-grid">
-
-        <div class="info-card">
-          <span>File Name</span>
-          <h3>{{ response.fileName }}</h3>
-        </div>
-
-        <div class="info-card">
-          <span>File Size</span>
-          <h3>{{ response.fileSize }} bytes</h3>
-        </div>
-
-        <div class="info-card">
-          <span>Database ID</span>
-          <h3>#{{ response.id }}</h3>
-        </div>
-
-      </div>
-
-      <div class="hash-box">
-
-        <span>SHA-256 Hash</span>
-
-        <textarea
-          [value]="response.hashValue.substring(0,10) + '........' + response.hashValue.substring(response.hashValue.length - 6)"
-          readonly
-        ></textarea>
-
-      </div>
-
-    </div>
-
-    <!-- VERIFY CARD -->
-
-    <div class="upload-card">
-
-      <h2>Verify File Integrity</h2>
-
-      <input
-        type="number"
-        placeholder="Enter File ID"
-        [(ngModel)]="verifyId"
-        class="verify-input"
-      />
-
-      <input
-        type="file"
-        id="verifyFileInput"
-        hidden
-        (change)="onVerifyFileSelected($event)"
-      />
-
-      <label
-        for="verifyFileInput"
-        class="upload-box"
-      >
-
-        <div class="upload-content">
-
-          <div class="upload-icon">
-            🔍
+            <button
+              type="button"
+              class="btn btn-primary"
+              [disabled]="!selectedFile"
+              (click)="uploadFile()"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+              Upload & Generate Hash
+            </button>
           </div>
 
-          <h3>Select File To Verify</h3>
+          <!-- UPLOAD RESULT DISPLAY -->
+          <div class="card-footer result-section" *ngIf="response">
+            <div class="alert alert-success">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              <span>File Registered & Hashed Successfully</span>
+            </div>
 
-          <p>Check integrity using SHA-256</p>
+            <div class="detail-grid">
+              <div class="detail-item">
+                <span class="detail-label">File Name</span>
+                <span class="detail-value">{{ response.fileName }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">File Size</span>
+                <span class="detail-value">{{ response.fileSize }} bytes</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Database ID</span>
+                <span class="detail-value highlight">#{{ response.id }}</span>
+              </div>
+            </div>
 
-        </div>
+            <div class="hash-container">
+              <div class="hash-label">
+                <span>SHA-256 Digest</span>
+                <span class="hash-type">Cryptographic Checksum</span>
+              </div>
+              <textarea
+                [value]="response.hashValue"
+                readonly
+                class="hash-textarea"
+              ></textarea>
+            </div>
+          </div>
+        </section>
 
-      </label>
+        <!-- COLUMN 2: FILE VERIFICATION SECTION -->
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="card-step-badge secondary">Step 2</span>
+              <h2>Verify File Integrity</h2>
+            </div>
+            <p class="card-description">Compare target file hash against stored database records to check for tampering.</p>
+          </div>
 
-      <div
-        class="selected-file"
-        *ngIf="verifyFile"
-      >
-        Selected File: {{ verifyFile.name }}
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label" for="verifyIdInput">Stored Database Record ID</label>
+              <input
+                id="verifyIdInput"
+                type="number"
+                placeholder="e.g. 1"
+                [(ngModel)]="verifyId"
+                class="form-input"
+              />
+            </div>
+
+            <input
+              type="file"
+              id="verifyFileInput"
+              hidden
+              (change)="onVerifyFileSelected($event)"
+            />
+
+            <label for="verifyFileInput" class="dropzone" [class.has-file]="verifyFile">
+              <div class="dropzone-content">
+                <div class="dropzone-icon">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  </svg>
+                </div>
+                <div class="dropzone-text">
+                  <h3>Select file to verify</h3>
+                  <p>Recalculates SHA-256 hash & matches record</p>
+                </div>
+              </div>
+            </label>
+
+            <div class="file-chip" *ngIf="verifyFile">
+              <div class="file-chip-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
+                  <polyline points="13 2 13 9 20 9"/>
+                </svg>
+              </div>
+              <span class="file-chip-name">{{ verifyFile.name }}</span>
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-primary"
+              [disabled]="!verifyFile || !verifyId"
+              (click)="verifyFileIntegrity()"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              Verify Integrity
+            </button>
+          </div>
+
+          <!-- VERIFICATION RESULT DISPLAY -->
+          <div class="card-footer result-section" *ngIf="verifyResponse">
+            <div
+              class="alert"
+              [class.alert-success]="verifyResponse.integrityValid"
+              [class.alert-danger]="!verifyResponse.integrityValid"
+            >
+              <svg *ngIf="verifyResponse.integrityValid" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+
+              <svg *ngIf="!verifyResponse.integrityValid" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+
+              <div class="alert-content">
+                <span class="alert-title">
+                  {{ verifyResponse.integrityValid ? 'Integrity Verified' : 'File Tampered Detected' }}
+                </span>
+                <span class="alert-sub">
+                  Target file: {{ verifyResponse.fileName }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+
       </div>
 
-      <button
-        type="button"
-        class="upload-btn"
-        [disabled]="!verifyFile || !verifyId"
-        (click)="verifyFileIntegrity()"
-      >
-        Verify Integrity
-      </button>
-
     </div>
-
-    <!-- VERIFY RESULT -->
-
-    <div
-      class="result-card"
-      *ngIf="verifyResponse"
-    >
-
-      <div
-        class="success-box"
-        [style.background]="verifyResponse.integrityValid ? '#22c55e' : '#ef4444'"
-      >
-
-        {{ verifyResponse.integrityValid
-          ? '✅ Integrity Verified'
-          : '❌ File Tampered' }}
-
-      </div>
-
-    </div>
-
-  </div>
-
+  </main>
 </div>
