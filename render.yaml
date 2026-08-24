@@ -8,16 +8,14 @@ services:
     runtime: docker
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
-    region: singapore # or oregon, ohio, frankfurt
+    region: singapore
     plan: free
     healthCheckPath: /
     envVars:
       - key: PORT
         value: 8080
       - key: SPRING_DATASOURCE_URL
-        fromDatabase:
-          name: secure-file-db
-          property: connectionString
+        sync: false # Set database connection URL in Render dashboard or use existing DB
       - key: SPRING_JPA_HIBERNATE_DDL_AUTO
         value: update
 
@@ -28,11 +26,4 @@ services:
     dockerfilePath: ./frontend/Dockerfile
     dockerContext: ./frontend
     region: singapore
-    plan: free
-
-databases:
-  # 3. Render Managed PostgreSQL Database
-  - name: secure-file-db
-    databaseName: file_integrity_db
-    user: db_user
     plan: free
