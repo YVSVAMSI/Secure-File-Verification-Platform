@@ -12,8 +12,8 @@ services:
     plan: free
     healthCheckPath: /
     envVars:
-      - key: PORT
-        value: 8080
+      # Do NOT set PORT: Render injects PORT=10000 and health-checks that port.
+      # application.properties binds to whatever PORT is provided.
       # Leave unset to fall back to the in-memory H2 database (data resets on redeploy).
       # To persist data, create a Render PostgreSQL instance and set these three vars.
       - key: SPRING_DATASOURCE_URL
