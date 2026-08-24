@@ -2,11 +2,13 @@
 <settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0 https://maven.apache.org/xsd/settings-1.2.0.xsd">
+  <!-- Maven Central rate-limits Render's shared build IPs (HTTP 429).
+       Google hosts a full mirror of Central that does not. -->
   <mirrors>
     <mirror>
-      <id>central-repo1</id>
-      <name>Official Central Repo1 Mirror</name>
-      <url>https://repo1.maven.org/maven2</url>
+      <id>google-maven-central</id>
+      <name>Google Maven Central Mirror</name>
+      <url>https://maven-central.storage-download.googleapis.com/maven2</url>
       <mirrorOf>central</mirrorOf>
     </mirror>
   </mirrors>

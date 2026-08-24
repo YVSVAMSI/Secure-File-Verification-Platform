@@ -1,15 +1,20 @@
 # Multi-stage Dockerfile for Spring Boot Backend (Java 21)
 
-# STAGE 1: Build application JAR with Maven settings mirror
+# STAGE 1: Build application JAR
 FROM maven:3.9.6-eclipse-temurin-21-alpine AS build
 WORKDIR /app
 
-# Copy pom.xml, settings.xml, and source code
+# Copy pom.xml and settings.xml, resolve all dependencies into a cached layer.
+# settings.xml points at Google's Maven Central mirror because repo1.maven.org
+# rate-limits Render's shared build IPs with HTTP 429.
 COPY pom.xml settings.xml ./
+RUN mvn -s settings.xml -B dependency:go-offline
+
+# Copy source code (only invalidates the deps layer when pom.xml changes)
 COPY src ./src
 
-# Build production JAR package using Google Maven Central mirror and retry flags
-RUN mvn clean package -s settings.xml -DskipTests -Dmaven.wagon.http.retryHandler.count=5
+# Build production JAR package
+RUN mvn -s settings.xml clean package -DskipTests
 
 # STAGE 2: Lightweight runtime image
 FROM eclipse-temurin:21-jre-alpine
