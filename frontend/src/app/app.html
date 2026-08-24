@@ -29,8 +29,8 @@
 
     <div class="sidebar-footer">
       <div class="status-indicator">
-        <span class="dot"></span>
-        <span class="status-text">System Active</span>
+        <span class="dot" [style.background]="backendStatus === 'CONNECTED' ? '#16A34A' : (backendStatus === 'CHECKING' ? '#D97706' : '#DC2626')"></span>
+        <span class="status-text">Backend: {{ backendStatus }}</span>
       </div>
     </div>
   </aside>
@@ -55,6 +55,38 @@
 
     <!-- CONTENT BODY -->
     <div class="content-container">
+
+      <!-- BACKEND SERVICE CONFIGURATION BANNER -->
+      <section class="card config-card" style="margin-bottom: 24px;">
+        <div class="card-body" style="padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2">
+              <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
+              <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
+              <line x1="6" y1="6" x2="6.01" y2="6"/>
+              <line x1="6" y1="18" x2="6.01" y2="18"/>
+            </svg>
+            <div>
+              <span style="font-size: 0.8125rem; font-weight: 600; color: var(--text-primary);">Backend API Endpoint:</span>
+              <span style="font-size: 0.8125rem; font-family: var(--font-mono); color: var(--primary-blue); margin-left: 6px;">{{ getApiUrl() }}</span>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 8px; flex: 1; max-width: 420px;">
+            <input
+              type="text"
+              placeholder="e.g. https://your-backend.onrender.com"
+              [ngModel]="customApiUrl"
+              (ngModelChange)="updateApiUrl($event)"
+              class="form-input"
+              style="padding: 6px 12px; font-size: 0.8125rem;"
+            />
+            <button type="button" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.75rem; width: auto; whitespace: nowrap;" (click)="checkBackendHealth()">
+              Test Connection
+            </button>
+          </div>
+        </div>
+      </section>
 
       <!-- COMPACT METRICS GRID -->
       <section class="metrics-grid">
@@ -159,18 +191,28 @@
               <span class="file-chip-size">({{ selectedFile.size }} bytes)</span>
             </div>
 
+            <!-- ERROR BANNER -->
+            <div class="alert alert-danger" *ngIf="uploadError">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              <span>{{ uploadError }}</span>
+            </div>
+
             <button
               type="button"
               class="btn btn-primary"
-              [disabled]="!selectedFile"
+              [disabled]="!selectedFile || isUploading"
               (click)="uploadFile()"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg *ngIf="!isUploading" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                 <polyline points="17 8 12 3 7 8"/>
                 <line x1="12" y1="3" x2="12" y2="15"/>
               </svg>
-              Upload & Generate Hash
+              <span>{{ isUploading ? 'Uploading & Hashing (Connecting...)' : 'Upload & Generate Hash' }}</span>
             </button>
           </div>
 
@@ -266,17 +308,27 @@
               <span class="file-chip-name">{{ verifyFile.name }}</span>
             </div>
 
+            <!-- ERROR BANNER -->
+            <div class="alert alert-danger" *ngIf="verifyError">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              <span>{{ verifyError }}</span>
+            </div>
+
             <button
               type="button"
               class="btn btn-primary"
-              [disabled]="!verifyFile || !verifyId"
+              [disabled]="!verifyFile || !verifyId || isVerifying"
               (click)="verifyFileIntegrity()"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg *ngIf="!isVerifying" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="11" cy="11" r="8"/>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"/>
               </svg>
-              Verify Integrity
+              <span>{{ isVerifying ? 'Verifying Integrity (Connecting...)' : 'Verify Integrity' }}</span>
             </button>
           </div>
 
